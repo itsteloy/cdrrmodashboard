@@ -13,8 +13,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import environ
-import firebase_admin
-from firebase_admin import credentials
+
+# Firebase admin SDK is optional in some environments (avoid crashing if not installed)
+try:
+    import firebase_admin
+    from firebase_admin import credentials
+    FIREBASE_SDK_AVAILABLE = True
+except Exception:
+    firebase_admin = None
+    credentials = None
+    FIREBASE_SDK_AVAILABLE = False
 
 # Initialize environment variables
 env = environ.Env()
@@ -136,17 +144,13 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Source static files directory (where your app's static files live during development)
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Ensure the source static directory exists so collectstatic and checks don't warn
 try:
     (BASE_DIR / 'static').mkdir(parents=True, exist_ok=True)
 except Exception:
     pass
-
-STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
 # Default primary key field type
@@ -156,28 +160,53 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Firebase configuration
 # Firebase configuration - allow JSON credentials via environment for Render
-try:
-    # If user provided credentials JSON via env var, write to firebase-key.json at startup
-    FIREBASE_JSON = env('FIREBASE_CREDENTIALS_JSON', default=None)
-    cred_path = BASE_DIR / 'firebase-key.json'
-    if FIREBASE_JSON:
-        try:
-            # write or overwrite the file so firebase_admin can read it
-            cred_path.write_text(FIREBASE_JSON)
-        except Exception as e:
-            print(f"Unable to write firebase-key.json from env: {e}")
+# Only attempt initialization when the Firebase admin SDK is available
+if FIREBASE_SDK_AVAILABLE:
+    try:
+        # If user provided credentials JSON via env var, write to firebase-key.json at startup
+        FIREBASE_JSON = env('FIREBASE_CREDENTIALS_JSON', default=None)
+        cred_path = BASE_DIR / 'firebase-key.json'
+        if FIREBASE_JSON:
+            try:
+                # write or overwrite the file so firebase_admin can read it
+                cred_path.write_text(FIREBASE_JSON)
+            except Exception as e:
+                # log to stdout so Render logs capture it
+                print(f"Unable to write firebase-key.json from env: {e}")
 
-    # initialize firebase if credentials file exists
-    if cred_path.exists():
-        cred = credentials.Certificate(cred_path)
-        if not firebase_admin._apps:
-            firebase_admin.initialize_app(cred)
-    else:
-        # not fatal; just warn
-        print(f"Firebase key not found at {cred_path}; Firestore features will be disabled.")
-except Exception as e:
-    # Keep application booting even if firebase is missing in the environment
-    print(f"Firebase initialization error: {e}")
+        # initialize firebase if credentials file exists
+        if cred_path.exists():
+            try:
+                cred = credentials.Certificate(str(cred_path))
+                if not firebase_admin._apps:
+                    firebase_admin.initialize_app(cred)
+            except Exception as e:
+                # invalid credentials file or initialization error
+                print(f"Firebase initialization error: {e}")
+        else:
+            # not fatal; just warn
+            print(f"Firebase key not found at {cred_path}; Firestore features will be disabled.")
+    except Exception as e:
+        # Keep application booting even if firebase is missing in the environment
+        print(f"Firebase initialization error: {e}")
+else:
+    # SDK not installed — print a warning (handlers that call firestore.client must check availability)
+    print("firebase_admin SDK not available; Firestore features will be disabled.")
+
+# Add basic logging so unhandled exceptions and prints appear in Render logs
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 # Django auth redirects
 LOGIN_URL = '/login/'

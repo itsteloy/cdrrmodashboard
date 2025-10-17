@@ -20,7 +20,7 @@ from django.shortcuts import redirect
 from dashboardapp import views
 
 urlpatterns = [
-    path('', lambda request: redirect('login')),
+    path('', views.dashboard, {'tab': 'dashboard_overview'}, name='home'),
     path('admin/', admin.site.urls), 
     path('logout/', views.logout_view, name='logout'),
     path('login/', views.login_view, name='login'),
