@@ -1,0 +1,721 @@
+{% load static %}
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="editForm" method="post">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white sticky-top">
+                    <h5 class="modal-title" id="editModalLabel">
+                        <i class="fas fa-edit me-2"></i>Edit Emergency Record
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
+                    <input type="hidden" name="document_id" id="edit_document_id">
+
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs mb-4 sticky-top bg-white" id="recordTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="patient-tab" data-bs-toggle="tab"
+                                data-bs-target="#patient-info" type="button" role="tab">
+                                <i class="fas fa-user me-1"></i> Patient Info
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="incident-tab" data-bs-toggle="tab"
+                                data-bs-target="#incident-details" type="button" role="tab">
+                                <i class="fas fa-ambulance me-1"></i> Incident Info
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="medical-tab" data-bs-toggle="tab"
+                                data-bs-target="#medical-status" type="button" role="tab">
+                                <i class="fas fa-heartbeat me-1"></i> Medical
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="vitals-tab" data-bs-toggle="tab" data-bs-target="#vital-signs"
+                                type="button" role="tab">
+                                <i class="fas fa-heart me-1"></i> Vitals
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatment"
+                                type="button" role="tab">
+                                <i class="fas fa-medkit me-1"></i> Treatment
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="team-tab" data-bs-toggle="tab" data-bs-target="#responding-team"
+                            type="button" role="tab">
+                                <i class="fas fa-users me-1"></i> Responding Team
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="recordTabsContent">
+
+                        <!-- Patient Info Tab -->
+                        <div class="tab-pane fade show active" id="patient-info" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="patient_name" name="patient_name"
+                                            placeholder="Patient Name">
+                                        <label for="patient_name">Patient Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="age" name="age" placeholder="Age">
+                                        <label for="age">Age</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" placeholder="Date of Birth">
+                                        <label for="date_of_birth">Date of Birth</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="contact_number"
+                                            name="contact_number" placeholder="Contact Number">
+                                        <label for="contact_number">Contact Number</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="barangay" name="barangay">
+                                            <option value="" selected disabled>Select Barangay</option>
+                                            <option value="A. O. Floirendo">A. O. Floirendo</option>
+                                            <option value="Buenavista">Buenavista</option>
+                                            <option value="Cacao">Cacao</option>
+                                            <option value="Cagangohan">Cagangohan</option>
+                                            <option value="Consolacion">Consolacion</option>
+                                            <option value="Dapco">Dapco</option>
+                                            <option value="Datu Abdul Dadia">Datu Abdul Dadia</option>
+                                            <option value="Gredu">Gredu</option>
+                                            <option value="J. P. Laurel">J. P. Laurel</option>
+                                            <option value="Kasilak">Kasilak</option>
+                                            <option value="Katipunan">Katipunan</option>
+                                            <option value="Katualan">Katualan</option>
+                                            <option value="Kauswagan">Kauswagan</option>
+                                            <option value="Kiotoy">Kiotoy</option>
+                                            <option value="Little Panay">Little Panay</option>
+                                            <option value="Lower Panaga">Lower Panaga</option>
+                                            <option value="Mabunao">Mabunao</option>
+                                            <option value="Maduao">Maduao</option>
+                                            <option value="Malativas">Malativas</option>
+                                            <option value="Manay">Manay</option>
+                                            <option value="Nanyo">Nanyo</option>
+                                            <option value="New Malaga">New Malaga</option>
+                                            <option value="New Malitbog">New Malitbog</option>
+                                            <option value="New Pandan">New Pandan</option>
+                                            <option value="New Visayas">New Visayas</option>
+                                            <option value="Quezon">Quezon</option>
+                                            <option value="Salvacion">Salvacion</option>
+                                            <option value="San Francisco">San Francisco</option>
+                                            <option value="San Nicolas">San Nicolas</option>
+                                            <option value="San Pedro">San Pedro</option>
+                                            <option value="San Roque">San Roque</option>
+                                            <option value="San Vicente">San Vicente</option>
+                                            <option value="Santa Cruz">Santa Cruz</option>
+                                            <option value="Santo Niño">Santo Niño</option>
+                                            <option value="Sindaton">Sindaton</option>
+                                            <option value="Southern Davao">Southern Davao</option>
+                                            <option value="Tagpore">Tagpore</option>
+                                            <option value="Tibungol">Tibungol</option>
+                                        </select>
+                                        <label for="barangay">Barangay</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="purok" name="purok" placeholder="Purok">
+                                        <label for="purok">Purok</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Sex</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="sex" id="sex-male" value="Male" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="sex-male">Male</label>
+                            
+                                        <input type="radio" class="btn-check" name="sex" id="sex-female" value="Female" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="sex-female">Female</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Incident Details Tab -->
+                        <div class="tab-pane fade" id="incident-details" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="date_of_incident"
+                                            name="date_of_incident" placeholder="Date of Incident">
+                                        <label for="date_of_incident">Date of Incident</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="chief_complaint"
+                                            name="chief_complaint" placeholder="Chief Complaint">
+                                        <label for="chief_complaint">Chief Complaint</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="destination" name="destination"
+                                            placeholder="Destination">
+                                        <label for="destination">Destination</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="pickup_point" name="pickup_point" placeholder="Pickup Point">
+                                        <label for="pickup_point">Pickup Point</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Nature of Call</label>
+                                    <div class="btn-group-vertical w-100" role="group">
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <input type="radio" class="btn-check" name="nature_of_call" id="nature-emergent" value="Emergent"
+                                                autocomplete="off">
+                                            <label class="btn btn-outline-primary flex-grow-1" for="nature-emergent">Emergent</label>
+                                            <input type="radio" class="btn-check" name="nature_of_call" id="nature-non-emergent" value="Non-Emergent"
+                                                autocomplete="off">
+                                            <label class="btn btn-outline-primary flex-grow-1" for="nature-non-emergent">Non-Emergent</label>
+                                            <input type="radio" class="btn-check" name="nature_of_call" id="nature-scene" value="Scene Response"
+                                                autocomplete="off">
+                                            <label class="btn btn-outline-primary flex-grow-1" for="nature-scene">Scene Response</label>
+                                            <input type="radio" class="btn-check" name="nature_of_call" id="nature-transfer" value="Transfer/Referral"
+                                                autocomplete="off">
+                                            <label class="btn btn-outline-primary flex-grow-1" for="nature-transfer">Transfer/Referral</label>
+                                            <input type="radio" class="btn-check" name="nature_of_call" id="nature-others" value="Others"
+                                                autocomplete="off">
+                                            <label class="btn btn-outline-primary flex-grow-1" for="nature-others">Others</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical Status Tab -->
+                        <div class="tab-pane fade" id="medical-status" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Allergy Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="allergy_status" id="allergy-yes"
+                                            value="Yes" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="allergy-yes">Yes</label>
+
+                                        <input type="radio" class="btn-check" name="allergy_status" id="allergy-no"
+                                            value="No" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="allergy-no">No</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Asthma Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="asthma_status" id="asthma-yes"
+                                            value="Yes" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="asthma-yes">Yes</label>
+
+                                        <input type="radio" class="btn-check" name="asthma_status" id="asthma-no"
+                                            value="No" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="asthma-no">No</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Diabetes Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="diabetes_status" id="diabetes-yes"
+                                            value="Yes" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="diabetes-yes">Yes</label>
+
+                                        <input type="radio" class="btn-check" name="diabetes_status" id="diabetes-no"
+                                            value="No" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="diabetes-no">No</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Hypertension Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="hypertension_status"
+                                            id="hypertension-yes" value="Yes" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="hypertension-yes">Yes</label>
+
+                                        <input type="radio" class="btn-check" name="hypertension_status"
+                                            id="hypertension-no" value="No" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="hypertension-no">No</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Seizures Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="seizures_status" id="seizures-yes"
+                                            value="Yes" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="seizures-yes">Yes</label>
+
+                                        <input type="radio" class="btn-check" name="seizures_status" id="seizures-no"
+                                            value="No" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="seizures-no">No</label>
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="other_medical_history" name="other_medical_history"
+                                                placeholder="Other Medical History">
+                                            <label for="other_medical_history">Other Medical History</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="medications" name="medications" placeholder="Medications">
+                                            <label for="medications">Medications</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vital Signs Tab -->
+                        <div class="tab-pane fade" id="vital-signs" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <!-- 1st Column -->
+                                        <div class="col-md">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="eye_score" name="eye_score" min="1" max="4"
+                                                            placeholder="Eye Score">
+                                                        <label for="eye_score">Eye Score</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="verbal_score" name="verbal_score" min="1" max="5"
+                                                            placeholder="Verbal Score">
+                                                        <label for="verbal_score">Verbal Score</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="motor_score" name="motor_score" min="1" max="6"
+                                                            placeholder="Motor Score">
+                                                        <label for="motor_score">Motor Score</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="gcs_total" name="gcs_total" readonly
+                                                            placeholder="GCS Total">
+                                                        <label for="gcs_total">GCS Total</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- 2nd Column -->
+                                        <div class="col-md">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="left_pupil_size" name="left_pupil_size"
+                                                            placeholder="Left Pupil Size">
+                                                        <label for="left_pupil_size">Left Pupil Size</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="right_pupil_size" name="right_pupil_size"
+                                                            placeholder="Right Pupil Size">
+                                                        <label for="right_pupil_size">Right Pupil Size</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">Left Pupil Reaction</label>
+                                                    <div class="btn-group w-100" role="group">
+                                                        <input type="radio" class="btn-check" name="left_pupil_reaction" id="left-normal" value="Normal"
+                                                            autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="left-normal">Normal</label>
+                                
+                                                        <input type="radio" class="btn-check" name="left_pupil_reaction" id="left-sluggish"
+                                                            value="Sluggish" autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="left-sluggish">Sluggish</label>
+                                
+                                                        <input type="radio" class="btn-check" name="left_pupil_reaction" id="left-fixed" value="Fixed"
+                                                            autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="left-fixed">Fixed</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">Right Pupil Reaction</label>
+                                                    <div class="btn-group w-100" role="group">
+                                                        <input type="radio" class="btn-check" name="right_pupil_reaction" id="right-normal"
+                                                            value="Normal" autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="right-normal">Normal</label>
+                                
+                                                        <input type="radio" class="btn-check" name="right_pupil_reaction" id="right-sluggish"
+                                                            value="Sluggish" autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="right-sluggish">Sluggish</label>
+                                
+                                                        <input type="radio" class="btn-check" name="right_pupil_reaction" id="right-fixed" value="Fixed"
+                                                            autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="right-fixed">Fixed</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- 3rd Column -->
+                                        <div class="col-md">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="systolic_bp" name="systolic_bp"
+                                                            placeholder="Systolic BP">
+                                                        <label for="systolic_bp">Systolic BP</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="diastolic_bp" name="diastolic_bp"
+                                                            placeholder="Diastolic BP">
+                                                        <label for="diastolic_bp">Diastolic BP</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="pulse_rate" name="pulse_rate"
+                                                            placeholder="Pulse Rate">
+                                                        <label for="pulse_rate">Pulse Rate</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- 4th Column -->
+                                        <div class="col-md">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate"
+                                                            placeholder="Respiratory Rate">
+                                                        <label for="respiratory_rate">Respiratory Rate</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="temperature" name="temperature"
+                                                            placeholder="Temperature">
+                                                        <label for="temperature">Temperature</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control" id="pulse_ox" name="pulse_ox" placeholder="Pulse Ox">
+                                                        <label for="pulse_ox">Pulse Ox</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <select class="form-select" id="appearance_observation" name="appearance_observation">
+                                                            <option value="" selected disabled>Select Appearance</option>
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="Pale">Pale</option>
+                                                            <option value="Cyanotic">Cyanotic</option>
+                                                        </select>
+                                                        <label for="appearance_observation">Appearance Observation</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <select class="form-select" id="bloodloss_observation" name="bloodloss_observation">
+                                                            <option value="" selected disabled>Select Blood Loss</option>
+                                                            <option value="None">None</option>
+                                                            <option value="Moderate < 1L">Moderate < 1L</option>
+                                                            <option value="Severe > 1 1/2L">Severe > 1 1/2L</option>
+                                                        </select>
+                                                        <label for="bloodloss_observation">Bloodloss Observation</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-floating">
+                                                        <select class="form-select" id="capillary_refill_time" name="capillary_refill_time">
+                                                            <option value="" selected disabled>Select Capillary Refill</option>
+                                                            <option value="Normal < 2s">Normal < 2s</option>
+                                                            <option value="Delayed > 2s">Delayed > 2s</option>
+                                                            <option value="None">None</option>
+                                                        </select>
+                                                        <label for="capillary_refill_time">Capillary Refill Time</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <!-- Treatment Tab -->
+                        <div class="tab-pane fade" id="treatment" role="tabpanel">
+                            <div class="row g-3">
+
+                                                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button"
+                                                id="treatmentsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Select Treatments
+                                            </button>
+                                            <ul class="dropdown-menu w-100" aria-labelledby="treatmentsDropdown">
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="CPR" id="treatmentCPR"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentCPR">CPR</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Oxygen" id="treatmentOxygen"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentOxygen">Oxygen</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Ventilation" id="treatmentVentilation"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentVentilation">Ventilation</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Ice Pack" id="treatmentIcePack"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentIcePack">Ice Pack</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Bandaging" id="treatmentBandaging"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentBandaging">Bandaging</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Splinting" id="treatmentSplinting"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentSplinting">Splinting</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Medication" id="treatmentMedication"
+                                                            name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentMedication">Medication</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Defibrillation"
+                                                            id="treatmentDefibrillation" name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentDefibrillation">Defibrillation</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Wound Dressing"
+                                                            id="treatmentWoundDressing" name="treatments_given">
+                                                        <label class="form-check-label" for="treatmentWoundDressing">Wound Dressing</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="other_treatment" name="other_treatment"
+                                                    placeholder="Specify Other Treatment">
+                                                <label for="other_treatment">Other Treatment</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button"
+                                                id="equipmentDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Select Equipment
+                                            </button>
+                                            <ul class="dropdown-menu w-100" aria-labelledby="equipmentDropdown">
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Stretcher" id="equipmentStretcher"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentStretcher">Stretcher</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Backboard" id="equipmentBackboard"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentBackboard">Backboard</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Oxygen Tank" id="equipmentOxygenTank"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentOxygenTank">Oxygen Tank</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Defibrillator"
+                                                            id="equipmentDefibrillator" name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentDefibrillator">Defibrillator</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Suction Device"
+                                                            id="equipmentSuctionDevice" name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentSuctionDevice">Suction Device</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Splint" id="equipmentSplint"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentSplint">Splint</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Bandages" id="equipmentBandages"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentBandages">Bandages</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check ms-2">
+                                                        <input class="form-check-input" type="checkbox" value="Long Board" id="equipmentLongBoard"
+                                                            name="equipment_used">
+                                                        <label class="form-check-label" for="equipmentLongBoard">Long Board</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="other_equipment" name="other_equipment"
+                                                    placeholder="Specify Other Equipment">
+                                                <label for="other_equipment">Other Equipment</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="consent_to_care"
+                                            name="consent_to_care" value="Yes">
+                                        <label class="form-check-label" for="consent_to_care">Consent to Care</label>
+                                    </div>
+
+                                    <div class="form-check form-switch mt-3">
+                                        <input class="form-check-input" type="checkbox" id="waiver" name="waiver"
+                                            value="Signed">
+                                        <label class="form-check-label" for="waiver">Waiver Signed</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="remarks" name="remarks" style="height: 120px"
+                                            placeholder="Remarks"></textarea>
+                                        <label for="remarks">Remarks</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Responding Team Tab-->
+                         <div class="tab-pane fade" id="responding-team" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="responding_unit" name="responding_unit" placeholder="Responding Unit">
+                                        <label for="responding_unit">Responding Unit</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="team_leader" name="team_leader" placeholder="Team Leader">
+                                        <label for="team_leader">Team Leader</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="team_operator" name="team_operator" placeholder="Team Operator">
+                                        <label for="team_operator">Team Operator</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="team_member" name="team_member" placeholder="Team Member">
+                                        <label for="team_member">Team Member</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="noted_by" name="noted_by" placeholder="Officer In-charge">
+                                        <label for="noted_by">Officer In-charge</label>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                        
+                    </div>
+                </div>
+
+                <div class="modal-footer sticky-bottom bg-white">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'dashboardapp/js/editEmergencyRecords.js' %}"></script>

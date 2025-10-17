@@ -1,0 +1,24 @@
+<div class="table-responsive shadow-sm rounded">
+    <table class="table table-hover table-sm align-middle mb-0" id="mainTable">
+        <thead class="table-light">
+        <tr>
+            <th>Team Leader</th>
+            <th>Team Operator</th>
+            <th>Team Member</th>
+            <th>Noted By</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for doc in data %}
+        <tr>
+            <td>{{ doc.team_leader }}</td>
+            <td>{{ doc.team_operator }}</td>
+            <td>{{ doc.team_member }}</td>
+            <td>{{ doc.noted_by }}</td>
+            <td>{{ doc.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>

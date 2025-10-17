@@ -1,0 +1,26 @@
+<div class="table-responsive shadow-sm rounded">
+    <table class="table table-hover table-sm align-middle mb-0" id="mainTable">
+        <thead class="table-light">
+        <tr>
+            <th>Username</th>
+            <th>User Type</th>
+            <th>IP Address</th>
+            <th>Device ID</th>
+            <th>Status</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for doc in data %}
+        <tr>
+            <td>{{ doc.username }}</td>
+            <td>{{ doc.user_type }}</td>
+            <td>{{ doc.ip_address }}</td>
+            <td>{{ doc.device_id }}</td>
+            <td>{{ doc.status }}</td>
+            <td>{{ doc.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>

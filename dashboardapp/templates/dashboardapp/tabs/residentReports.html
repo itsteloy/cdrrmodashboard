@@ -1,0 +1,63 @@
+{% load static %}
+<!-- Add record count and search field -->
+<div class="row mb-3 align-items-center">
+    <!-- Record count on the left -->
+    <div class="col-md-6">
+        <span class="badge bg-success fs-6" id="reportCount">
+            Total Reports: {{ data|length }}
+        </span>
+    </div>
+
+    <!-- Search field on the right -->
+    <div class="col-md-6">
+        <div class="input-group ms-auto" style="max-width: 400px;">
+            <span class="input-group-text bg-success">
+                <i class="bi bi-search text-white"></i>
+            </span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search Reports">
+            <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="table-responsive shadow-sm rounded">
+    <table class="table table-hover table-sm align-middle mb-0" id="mainTable">
+        <thead class="table-light">
+        <tr>
+            <th>Full Name</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Timestamp</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for doc in data %}
+        <tr id="row-{{ doc.id }}">
+            <td class="w-20">{{ doc.fullname }}</td>
+            <td>{{ doc.description }}</td>
+            <td class="w-25">{{ doc.location }}</td>
+            <td class="text-center">
+                {% if doc.imageUrl %}
+                    <img src="{{ doc.imageUrl }}" alt="Incident Image" class="img-fluid img-thumbnail" style="max-width:160px;">
+                {% else %}
+                    <span class="text-muted">No image</span>
+                {% endif %}
+            </td>
+            <td>{{ doc.timestamp }}</td>
+            <td id="status-{{ doc.id }}" data-status="{{ doc.status|default:'Pending' }}" class="text-center">
+                <!-- Dynamic badge will be inserted by JavaScript -->
+            </td>
+            <td id="action-{{ doc.id }}" class="text-center">
+                <!-- Dynamic button will be inserted by JavaScript -->
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="/static/dashboardapp/js/realtime-resident.js"></script>
+<script src="{% static 'dashboardapp/js/searchReports.js' %}"></script>
