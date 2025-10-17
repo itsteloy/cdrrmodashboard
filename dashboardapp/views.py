@@ -76,10 +76,9 @@ def register_responder(request):
         if not fullname or not email or not password:
             return JsonResponse({'success': False, 'error': 'All fields are required'})
 
-        # Hash password using salted SHA-256 (store salt + hash)
-        salt = secrets.token_hex(16)
+        # Hash password using plain (unsalted) SHA-256 to match existing stored format
         hash_obj = hashlib.sha256()
-        hash_obj.update((salt + password).encode('utf-8'))
+        hash_obj.update(password.encode('utf-8'))
         password_hash = hash_obj.hexdigest()
 
         # Check for duplicate email in responder_credentials
@@ -91,9 +90,8 @@ def register_responder(request):
         data = {
             'fullname': fullname,
             'email': email,
-            # Store salted SHA-256 hash and the salt used
+            # Store SHA-256 hash (unsalted)
             'password': password_hash,
-            'salt': salt,
             # Use Firestore server timestamp constant
             'createdAt': firestore.SERVER_TIMESTAMP
         }
@@ -110,20 +108,53 @@ def register_responder(request):
 
 def login_view(request):
     if request.method == 'POST':
+        # Authenticate against Firestore 'admin_users' collection
         from django.contrib.auth.models import User
         email = (request.POST.get('email') or '').strip()
-        password = request.POST.get('password')
+        password = request.POST.get('password') or ''
         if not email or not password:
             return render(request, 'dashboardapp/login.html', {'error': 'Email and password are required'})
-        user_by_email = User.objects.filter(email__iexact=email).first()
-        if not user_by_email:
-            return render(request, 'dashboardapp/login.html', {'error': 'Invalid credentials'})
-        user = authenticate(request, username=user_by_email.username, password=password)
-        if user is not None:
+
+        try:
+            db = firestore.client()
+            query = db.collection('admin_users').where('email', '==', email).limit(1).stream()
+            doc = None
+            for d in query:
+                doc = d
+                break
+            if not doc:
+                return render(request, 'dashboardapp/login.html', {'error': 'Invalid credentials'})
+
+            data = doc.to_dict() or {}
+            stored_hash = (data.get('password') or '').strip()
+
+            # Verify using plain (unsalted) SHA-256 to match stored format
+            verified = False
+            try:
+                h = hashlib.sha256()
+                h.update(password.encode('utf-8'))
+                if h.hexdigest() == stored_hash:
+                    verified = True
+            except Exception:
+                verified = False
+
+            if not verified:
+                return render(request, 'dashboardapp/login.html', {'error': 'Invalid credentials'})
+
+            # At this point, credentials are valid. Ensure a Django User exists and log them in.
+            # Use a stable username (use email as username if no username stored)
+            username = (data.get('username') or data.get('email') or email).strip()
+            user, created = User.objects.get_or_create(username=username, defaults={'email': email})
+            if created:
+                # Do not set a usable password for Django local user (we authenticate via Firestore)
+                user.set_unusable_password()
+                user.save()
+
             login(request, user)
             return redirect('dashboard')
-        else:
-            return render(request, 'dashboardapp/login.html', {'error': 'Invalid credentials'})
+        except Exception as e:
+            # Log/return a generic error to avoid leaking internals
+            return render(request, 'dashboardapp/login.html', {'error': 'Login failed. Please try again.'})
     return render(request, 'dashboardapp/login.html')
 
 
