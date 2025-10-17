@@ -157,15 +157,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Firebase configuration
 # Firebase configuration - allow JSON credentials via environment for Render
 try:
-    # If user provided credentials JSON via env var, write to firebase_key.json at startup
+    # If user provided credentials JSON via env var, write to firebase-key.json at startup
     FIREBASE_JSON = env('FIREBASE_CREDENTIALS_JSON', default=None)
-    cred_path = BASE_DIR / 'firebase_key.json'
+    cred_path = BASE_DIR / 'firebase-key.json'
     if FIREBASE_JSON:
         try:
             # write or overwrite the file so firebase_admin can read it
             cred_path.write_text(FIREBASE_JSON)
         except Exception as e:
-            print(f"Unable to write firebase_key.json from env: {e}")
+            print(f"Unable to write firebase-key.json from env: {e}")
 
     # initialize firebase if credentials file exists
     if cred_path.exists():

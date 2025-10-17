@@ -7,9 +7,9 @@ __pycache__/
 .env
 .env.*
 *.env
-firebase_key.json
-firebase_key.*
-firebase_key-*.json
+firebase-key.json
+firebase-key.*
+firebase-key-*.json
 
 # Virtualenv
 venv/
